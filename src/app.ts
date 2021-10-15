@@ -13,8 +13,8 @@ class App {
 		useExpressServer(this.server, { ...options });
 	}
 
-	public startServer(port: number, callback?: () => void): void {
-		this.server.listen(port, callback);
+	public startServer(port: number, callback: (port: number) => void): void {
+		this.server.listen(port, () => callback(port));
 	}
 }
 

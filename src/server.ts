@@ -7,6 +7,6 @@ const app = new App({
 	controllers: [ObjectsController]
 });
 
-app.startServer(5000, () => {
-	console.log(`Server successfully started at port 5000`);
+app.startServer(5000, (port) => {
+	console.log(`Server successfully started on port ${port}`);
 });
