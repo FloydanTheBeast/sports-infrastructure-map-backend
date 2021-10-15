@@ -1,0 +1,1 @@
+cp src/.env build/src/

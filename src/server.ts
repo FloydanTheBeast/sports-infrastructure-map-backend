@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import App from "./app";
+import config from "./config";
 import { ObjectsController } from "./controllers";
 
 const app = new App({
@@ -7,6 +8,6 @@ const app = new App({
 	controllers: [ObjectsController]
 });
 
-app.startServer(5000, (port) => {
+app.startServer(config.server.port, (port) => {
 	console.log(`Server successfully started on port ${port}`);
 });

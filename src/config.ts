@@ -9,6 +9,13 @@ const env = validateEnv(process.env);
 const config = {
 	server: {
 		port: env.SERVER_PORT
+	},
+	db: {
+		host: env.DB_HOST,
+		port: env.DB_PORT,
+		name: env.DB_NAME,
+		user: env.DB_USER,
+		password: env.DB_PASSWORD
 	}
 };
 
