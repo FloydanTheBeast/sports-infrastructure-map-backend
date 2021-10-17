@@ -1,3 +1,5 @@
 import IEnvVars from "./IEnvVars";
+import IObject from "./IObject";
+import IObjectsFilters from "./IObjectsFilters";
 
-export { IEnvVars };
+export { IEnvVars, IObjectsFilters, IObject };

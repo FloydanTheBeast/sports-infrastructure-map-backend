@@ -1,26 +1,26 @@
 import { Response } from "express";
-import { Pool } from "pg";
-import { Get, JsonController, Res } from "routing-controllers";
-import config from "../config";
+import { Get, JsonController, QueryParams, Res } from "routing-controllers";
+import { IObjectsFilters } from "../interfaces";
+import getFilteredObjects from "../services/objects";
 
 @JsonController("/objects")
 export default class ObjectsController {
-	private pool: Pool;
-
-	constructor() {
-		this.pool = new Pool({
-			host: config.db.host,
-			port: config.db.port,
-			database: config.db.name,
-			user: config.db.user,
-			password: config.db.password
-		});
-	}
-
 	@Get()
-	public async getObjects(@Res() res: Response): Promise<any> {
-		return this.pool
-			.query("SELECT * FROM objects LIMIT 30")
-			.then((dbResult) => res.status(200).send(dbResult.rows));
+	public async getObjects(
+		@QueryParams() params: IObjectsFilters,
+		@Res() res: Response
+	): Promise<any> {
+		if (
+			!params.fromLat ||
+			!params.fromLng ||
+			!params.toLat ||
+			!params.toLng
+		) {
+			return res.status(400).send({
+				error: "Предоставлены некорректные параметры"
+			});
+		}
+
+		return res.status(200).send(await getFilteredObjects(params));
 	}
 }
