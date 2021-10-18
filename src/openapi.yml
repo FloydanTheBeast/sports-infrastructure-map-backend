@@ -44,3 +44,40 @@ paths:
       responses:
         200:
           description: Все параметры и фильтры корректны
+  /population_density_heatmap:
+    get:
+      tags:
+        - heatmap
+      summary: Получение тепловой карты плотности населения
+      parameters:
+        - in: query
+          name: minLat
+          required: true
+          description: Минимальная широта выделенной области
+          schema:
+            type: number
+            example: 55.2
+        - in: query
+          name: minLng
+          required: true
+          description: Минимальная долгота выделенной области
+          schema:
+            type: number
+            example: 36.9
+        - in: query
+          name: maxLat
+          required: true
+          description: Максимальная широта выделенной области
+          schema:
+            type: number
+            example: 55.3
+        - in: query
+          name: maxLng
+          required: true
+          description: Максимальная долгота выделенной области
+          schema:
+            type: number
+            example: 37.1
+      responses:
+        200:
+          description: Границы области и матрица плотностей для этих границ
