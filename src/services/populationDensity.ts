@@ -1,4 +1,5 @@
 import cache from "memory-cache";
+import { BadRequestError } from "routing-controllers";
 import { IGeoRect } from "../interfaces";
 import query from "./db";
 import { getSubMatrixForRectSelection } from "./geoMatrix";
@@ -7,14 +8,25 @@ async function getPopulationDensityHeatMap(selection: IGeoRect): Promise<{
 	geoRect: IGeoRect;
 	matrix: number[][];
 }> {
+	if (
+		!selection.minLat ||
+		!selection.minLng ||
+		!selection.maxLat ||
+		!selection.maxLng
+	) {
+		throw new BadRequestError("Предоставлены некорректные параметры");
+	}
+
 	const matrixGeoRect = await loadMatrixGeoRect();
 	const matrixSize = chooseMatrixSize(selection, matrixGeoRect);
 	const matrix = await loadMatrix(matrixSize);
+
 	return getSubMatrixForRectSelection(selection, matrix, matrixGeoRect);
 }
 
 async function loadMatrix(size: number): Promise<number[][]> {
 	const cacheKey = `population-density-matrix-${size}`;
+
 	if (cache.get(cacheKey) === null) {
 		const records = await query(
 			`SELECT size, matrix
@@ -25,11 +37,13 @@ async function loadMatrix(size: number): Promise<number[][]> {
 		const matrix = JSON.parse(records[0]["matrix"]);
 		cache.put(cacheKey, matrix);
 	}
+
 	return cache.get(cacheKey);
 }
 
 async function loadMatrixGeoRect(): Promise<IGeoRect> {
 	const cacheKey = "matrix-geo-rect";
+
 	if (cache.get(cacheKey) === null) {
 		const records = await query(
 			`SELECT min_lat, min_lng, max_lat, max_lng
@@ -45,6 +59,7 @@ async function loadMatrixGeoRect(): Promise<IGeoRect> {
 		};
 		cache.put(cacheKey, geoRect);
 	}
+
 	return cache.get(cacheKey);
 }
 
@@ -58,9 +73,11 @@ function chooseMatrixSize(
 	const latZoom =
 		(matrixGeoRect.maxLat - matrixGeoRect.minLat) /
 		(selection.maxLat - selection.minLat);
+
 	const lngZoom =
 		(matrixGeoRect.maxLng - matrixGeoRect.minLng) /
 		(selection.maxLng - selection.minLng);
+
 	const zoom = Math.max(latZoom, lngZoom) * minMatrixSize;
 	const powerOf2 = Math.floor(Math.log2(zoom) + 0.5);
 	const matrixSize = Math.round(Math.pow(2, powerOf2));

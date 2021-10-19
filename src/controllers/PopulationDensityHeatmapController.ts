@@ -1,25 +1,31 @@
 import { Response } from "express";
-import { Get, JsonController, QueryParams, Res } from "routing-controllers";
+import {
+	Get,
+	HttpError,
+	JsonController,
+	QueryParams,
+	Res
+} from "routing-controllers";
 import { IGeoRect } from "../interfaces";
 import getPopulationDensityHeatMap from "../services/populationDensity";
 
-@JsonController("/population_density_heatmap")
+@JsonController("/heatmap")
 export default class PopulationDensityHeatmapController {
-	@Get()
+	@Get("/population-density")
 	public async getPopulationDensityHeatMap(
 		@QueryParams() params: IGeoRect,
 		@Res() res: Response
 	): Promise<any> {
-		if (
-			!params.minLat ||
-			!params.minLng ||
-			!params.maxLat ||
-			!params.maxLng
-		) {
+		return await getPopulationDensityHeatMap(params).catch((err) => {
+			if (err instanceof HttpError) {
+				return res.status(err.httpCode).send({
+					message: err.message
+				});
+			}
+
 			return res.status(400).send({
-				error: "Предоставлены некорректные параметры"
+				message: err.message()
 			});
-		}
-		return res.status(200).send(await getPopulationDensityHeatMap(params));
+		});
 	}
 }
