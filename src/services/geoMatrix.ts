@@ -75,7 +75,7 @@ export function getSubMatrixForRectSelection(
 	const resultMatrix = [];
 	for (let i = vertMinIndex; i <= vertMaxIndex; i++) {
 		const row = [];
-		for (let j = horzMinIndex; j < horzMaxIndex; j++) {
+		for (let j = horzMinIndex; j <= horzMaxIndex; j++) {
 			row.push(matrix[i][j]);
 		}
 		resultMatrix.push(row);
