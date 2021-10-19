@@ -1,7 +1,7 @@
-import { getSubMatrixForRectSelection } from "./geoMatrix";
+import cache from "memory-cache";
 import { IGeoRect } from "../interfaces";
 import query from "./db";
-import cache from "memory-cache";
+import { getSubMatrixForRectSelection } from "./geoMatrix";
 
 async function getPopulationDensityHeatMap(selection: IGeoRect): Promise<{
 	geoRect: IGeoRect;
