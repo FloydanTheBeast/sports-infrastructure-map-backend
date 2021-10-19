@@ -1,19 +1,22 @@
 import { Response } from "express";
 import {
+	Body,
 	Get,
 	JsonController,
 	NotFoundError,
+	Post,
 	QueryParams,
 	Res
 } from "routing-controllers";
-import { IObjectsFilters } from "../interfaces";
+import { IObjectsFilters, IObjectsQueryParams } from "../interfaces";
 import { getFilteredObjects, getObjectAttributes } from "../services";
 
 @JsonController("/objects")
 export default class ObjectsController {
-	@Get("/")
+	@Post("/")
 	public async getObjects(
-		@QueryParams() params: IObjectsFilters,
+		@QueryParams() params: IObjectsQueryParams,
+		@Body() body: IObjectsFilters,
 		@Res() res: Response
 	): Promise<any> {
 		if (
@@ -27,7 +30,7 @@ export default class ObjectsController {
 			});
 		}
 
-		return res.status(200).send(await getFilteredObjects(params));
+		return res.status(200).send(await getFilteredObjects(params, body));
 	}
 
 	@Get("/attributes")

@@ -1,6 +1,7 @@
 import IEnvVars from "./IEnvVars";
+import IGeoRect from "./IGeoRect";
 import IObject from "./IObject";
 import IObjectsFilters from "./IObjectsFilters";
-import IGeoRect from "./IGeoRect";
+import IObjectsQueryParams from "./IObjectsQueryParams";
 
-export { IEnvVars, IObjectsFilters, IObject, IGeoRect };
+export { IEnvVars, IObjectsQueryParams, IObjectsFilters, IObject, IGeoRect };

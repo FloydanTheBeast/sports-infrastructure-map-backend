@@ -1,6 +1,8 @@
 export default interface IObjectsFilters {
-	fromLat: number;
-	fromLng: number;
-	toLat: number;
-	toLng: number;
+	objectName?: string;
+	departmentIds?: number[];
+	sportzoneName?: string;
+	sportzoneTypesIds?: number[];
+	sportTypesIds?: number[];
+	proximityIds?: number[];
 }
