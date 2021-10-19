@@ -1,6 +1,7 @@
 import { getSubMatrixForRectSelection } from "./geoMatrix";
 import { IGeoRect } from "../interfaces";
 import query from "./db";
+import cache from "memory-cache";
 
 const matrixGeoRect = {
 	minLat: 55.1471993,
@@ -19,13 +20,18 @@ async function getPopulationDensityHeatMap(selection: IGeoRect): Promise<{
 }
 
 async function loadMatrix(size: number): Promise<number[][]> {
-	const records = await query(
-		`SELECT size, matrix
-		FROM population_density_matrixes
-		WHERE size = $1`,
-		[size]
-	);
-	return JSON.parse(records[0]["matrix"]);
+	const cacheKey = `population-density-matrix-${size}`;
+	if (cache.get(cacheKey) === null) {
+		const records = await query(
+			`SELECT size, matrix
+			FROM population_density_matrixes
+			WHERE size = $1`,
+			[size]
+		);
+		const matrix = JSON.parse(records[0]["matrix"]);
+		cache.put(cacheKey, matrix);
+	}
+	return cache.get(cacheKey);
 }
 
 function chooseMatrixSize(
