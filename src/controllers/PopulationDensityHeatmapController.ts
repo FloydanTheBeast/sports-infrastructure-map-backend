@@ -20,6 +20,6 @@ export default class PopulationDensityHeatmapController {
 				error: "Предоставлены некорректные параметры"
 			});
 		}
-		return res.status(200).send(getPopulationDensityHeatMap(params));
+		return res.status(200).send(await getPopulationDensityHeatMap(params));
 	}
 }
