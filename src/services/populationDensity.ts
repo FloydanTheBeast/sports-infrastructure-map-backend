@@ -3,17 +3,11 @@ import { IGeoRect } from "../interfaces";
 import query from "./db";
 import cache from "memory-cache";
 
-const matrixGeoRect = {
-	minLat: 55.1471993,
-	minLng: 36.75571401,
-	maxLat: 56.0785417,
-	maxLng: 38.06930099
-};
-
 async function getPopulationDensityHeatMap(selection: IGeoRect): Promise<{
 	geoRect: IGeoRect;
 	matrix: number[][];
 }> {
+	const matrixGeoRect = await loadMatrixGeoRect();
 	const matrixSize = chooseMatrixSize(selection, matrixGeoRect);
 	const matrix = await loadMatrix(matrixSize);
 	return getSubMatrixForRectSelection(selection, matrix, matrixGeoRect);
@@ -30,6 +24,26 @@ async function loadMatrix(size: number): Promise<number[][]> {
 		);
 		const matrix = JSON.parse(records[0]["matrix"]);
 		cache.put(cacheKey, matrix);
+	}
+	return cache.get(cacheKey);
+}
+
+async function loadMatrixGeoRect(): Promise<IGeoRect> {
+	const cacheKey = "matrix-geo-rect";
+	if (cache.get(cacheKey) === null) {
+		const records = await query(
+			`SELECT min_lat, min_lng, max_lat, max_lng
+			FROM map_borders`,
+			[]
+		);
+		const borders = records[0];
+		const geoRect = {
+			minLat: borders["min_lat"],
+			minLng: borders["min_lng"],
+			maxLat: borders["max_lat"],
+			maxLng: borders["max_lng"]
+		};
+		cache.put(cacheKey, geoRect);
 	}
 	return cache.get(cacheKey);
 }
