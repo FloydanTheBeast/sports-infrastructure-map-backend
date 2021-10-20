@@ -7,7 +7,7 @@ import {
 	Res
 } from "routing-controllers";
 import { IGeoRect } from "../interfaces";
-import getPopulationDensityHeatMap from "../services/populationDensity";
+import { getPopulationDensityHeatMap } from "../services";
 
 @JsonController("/heatmap")
 export default class PopulationDensityHeatmapController {
