@@ -1,4 +1,12 @@
 import { getFilteredObjects, getObjectAttributes } from "./objects";
-import getPopulationDensityHeatMap from "./populationDensity";
+import {
+	getPopulationDensityHeatMap,
+	getAmountOfPeopleInSelection
+} from "./populationDensity";
 
-export { getFilteredObjects, getObjectAttributes, getPopulationDensityHeatMap };
+export {
+	getFilteredObjects,
+	getObjectAttributes,
+	getPopulationDensityHeatMap,
+	getAmountOfPeopleInSelection
+};

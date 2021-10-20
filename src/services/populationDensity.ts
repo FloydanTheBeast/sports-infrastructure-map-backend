@@ -3,8 +3,15 @@ import { BadRequestError } from "routing-controllers";
 import { IGeoRect } from "../interfaces";
 import query from "./db";
 import { getSubMatrixForRectSelection } from "./geoMatrix";
+import _ from "lodash";
+import haversine from "haversine";
 
-async function getPopulationDensityHeatMap(selection: IGeoRect): Promise<{
+const MIN_MATRIX_SIZE = 32;
+const MAX_MATRIX_SIZE = 2048;
+
+export async function getPopulationDensityHeatMap(
+	selection: IGeoRect
+): Promise<{
 	geoRect: IGeoRect;
 	matrix: number[][];
 }> {
@@ -67,9 +74,6 @@ function chooseMatrixSize(
 	selection: IGeoRect,
 	matrixGeoRect: IGeoRect
 ): number {
-	const minMatrixSize = 32;
-	const maxMatrixSize = 2048;
-
 	const latZoom =
 		(matrixGeoRect.maxLat - matrixGeoRect.minLat) /
 		(selection.maxLat - selection.minLat);
@@ -78,11 +82,90 @@ function chooseMatrixSize(
 		(matrixGeoRect.maxLng - matrixGeoRect.minLng) /
 		(selection.maxLng - selection.minLng);
 
-	const zoom = Math.max(latZoom, lngZoom) * minMatrixSize;
+	const zoom = Math.max(latZoom, lngZoom) * MIN_MATRIX_SIZE;
 	const powerOf2 = Math.floor(Math.log2(zoom) + 0.5);
 	const matrixSize = Math.round(Math.pow(2, powerOf2));
 
-	return Math.max(Math.min(matrixSize, maxMatrixSize), minMatrixSize);
+	return Math.max(Math.min(matrixSize, MAX_MATRIX_SIZE), MIN_MATRIX_SIZE);
 }
 
-export default getPopulationDensityHeatMap;
+// Возвращает положительное вещественное число или 0
+export async function getAmountOfPeopleInSelection(
+	selection: IGeoRect
+): Promise<number> {
+	const maxMatrix = await loadMatrix(MAX_MATRIX_SIZE);
+	const borders = await loadMatrixGeoRect();
+	const { geoRect, matrix } = getSubMatrixForRectSelection(
+		selection,
+		maxMatrix,
+		borders
+	);
+	const fullSum = _.sum(_.flatten(matrix));
+	const latStepSize = (borders.maxLat - borders.minLat) / MAX_MATRIX_SIZE;
+	const lngStepSize = (borders.maxLng - borders.minLng) / MAX_MATRIX_SIZE;
+	const minLatCutRatio = Math.min(
+		Math.max((selection.minLat - geoRect.minLat) / latStepSize, 0),
+		1
+	);
+	const minLngCutRatio = Math.min(
+		Math.max((selection.minLng - geoRect.minLng) / lngStepSize, 0),
+		1
+	);
+	const maxLatCutRatio = Math.min(
+		Math.max((geoRect.maxLat - selection.maxLat) / latStepSize, 0),
+		1
+	);
+	const maxLngCutRatio = Math.min(
+		Math.max((geoRect.maxLng - selection.maxLng) / lngStepSize, 0),
+		1
+	);
+	const minLatEdgeSum = _.sum(_.first(matrix)) * minLatCutRatio;
+	const minLngEdgeSum = _.sum(_.map(matrix, _.first)) * minLngCutRatio;
+	const maxLatEdgeSum = _.sum(_.last(matrix)) * maxLatCutRatio;
+	const maxLngEdgeSum = _.sum(_.map(matrix, _.last)) * maxLngCutRatio;
+
+	const minLatMinLngCorner =
+		(_.first(_.first(matrix) || []) || 0) * minLatCutRatio * minLngCutRatio;
+	const minLatMaxLngCorner =
+		(_.last(_.first(matrix) || []) || 0) * minLatCutRatio * maxLngCutRatio;
+	const maxLatMinLngCorner =
+		(_.first(_.last(matrix) || []) || 0) * maxLatCutRatio * minLngCutRatio;
+	const maxLatMaxLngCorner =
+		(_.last(_.last(matrix) || []) || 0) * maxLatCutRatio * maxLngCutRatio;
+
+	const selectionMatrixSum =
+		fullSum -
+		(minLatEdgeSum + minLngEdgeSum + maxLatEdgeSum + maxLngEdgeSum) -
+		(minLatMinLngCorner +
+			minLatMaxLngCorner +
+			maxLatMinLngCorner +
+			maxLatMaxLngCorner);
+
+	const startLat = {
+		latitude: borders.minLat,
+		longitude: (borders.minLng + borders.maxLng) / 2
+	};
+	const endLat = {
+		latitude: borders.maxLat,
+		longitude: (borders.minLng + borders.maxLng) / 2
+	};
+	const startLng = {
+		latitude: (borders.minLat + borders.maxLat) / 2,
+		longitude: borders.minLng
+	};
+	const endLng = {
+		latitude: (borders.minLat + borders.maxLat) / 2,
+		longitude: borders.maxLng
+	};
+	const mapLatHeight = borders.maxLat - borders.minLat;
+	const mapLngWidth = borders.maxLng - borders.minLng;
+	const mapHeightKm =
+		haversine(startLat, endLat, { unit: "km" }) / mapLatHeight;
+	const mapWidthKm =
+		haversine(startLng, endLng, { unit: "km" }) / mapLngWidth;
+
+	const oneCellSquare =
+		(mapHeightKm / MAX_MATRIX_SIZE) * (mapWidthKm / MAX_MATRIX_SIZE);
+
+	return selectionMatrixSum * oneCellSquare;
+}
