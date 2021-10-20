@@ -8,7 +8,7 @@ import {
 	QueryParams,
 	Res
 } from "routing-controllers";
-import { IObjectsFilters, IObjectsQueryParams } from "../interfaces";
+import { IObject, IObjectsFilters, IObjectsQueryParams } from "../interfaces";
 import { getFilteredObjects, getObjectAttributes } from "../services";
 
 @JsonController("/objects")
@@ -18,7 +18,7 @@ export default class ObjectsController {
 		@QueryParams() params: IObjectsQueryParams,
 		@Body() body: IObjectsFilters,
 		@Res() res: Response
-	): Promise<any> {
+	): Promise<IObject[] | Record<any, any>> {
 		return await getFilteredObjects(params, body)
 			.then((objs) => res.status(200).send(objs))
 			.catch((err) => {

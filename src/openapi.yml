@@ -41,10 +41,43 @@ paths:
           schema:
             type: integer
             example: 37.587644
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ObjectsFilters"
       responses:
         200:
           description: Все параметры и фильтры корректны
-  /population_density_heatmap:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Object"
+  /objects/attributes:
+    get:
+      tags:
+        - objects
+      summary: Получение полной информации об объекте
+      parameters:
+        - in: query
+          name: objectID
+          required: true
+          description: ID объекта
+          schema:
+            type: number
+            example: 100153
+      responses:
+        200:
+          description: Объект найден
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/ObjectExtended"
+        404:
+          description: Объект не найден
+  /heatmap/population-density:
     get:
       tags:
         - heatmap
@@ -81,3 +114,95 @@ paths:
       responses:
         200:
           description: Границы области и матрица плотностей для этих границ
+        400:
+          description: Параметры некорректны
+components:
+  schemas:
+    Object:
+      description: Основные свойства спортивного объекта
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 100153
+        name:
+          type: string
+          example: Дворовая территория
+        lat:
+          type: number
+          description: Широта
+          example: 55.49153457862329
+        lng:
+          type: number
+          description: Долгота
+          example: 37.30870755828658
+        address:
+          type: string
+          example: город Троицк, улица Текстильщиков, дом 2А
+    ObjectsFilters:
+      description: Параметры фильтрации объектов
+      type: object
+      properties:
+        objectName:
+          type: string
+          description: Название спортивного объекта
+        departmentIds:
+          type: array
+          description: ID департаментов
+          items: 
+            type: integer
+        sportzoneName:
+          type: string
+          description: Название спортивной зоны
+        sportzoneTypesIds:
+          type: array
+          description: ID типов спортивных зон
+          items:
+            type: integer
+        sportTypesIds:
+          type: array
+          description: ID видов спорта
+          items:
+            type: integer
+        proximityIds:
+          type: array
+          description: ID возможных видов доступности
+          items:
+            type: integer
+    ObjectExtended:
+      description: Полная информация о спортивном объекте
+      type: object
+      properties:
+        name:
+          type: string
+          example: Дворовая территория
+        address:
+          type: string
+          example: город Троицк, улица Текстильщиков, дом 2А
+        department:
+          type: string
+          description: Название департамента
+          example: Департамент культуры города Москвы
+        proximity:
+          type: number
+          description: Доступность объекта
+          example: Шаговая доступность
+        sportzones:
+          type: array
+          description: Список спортивных зон спортивного объекта
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Название спортивной зоны
+                example: зал спортивный
+              square:
+                type: number
+                description: Площадь спортивной зоны
+                example: 116.9
+              sports_types:
+                type: array
+                items:
+                  type: string
+                  example: ["Баскетбол", "Волейбол"]
