@@ -6,6 +6,7 @@
 	"author": "FloydanTheBeast <floydanthebeast@gmail.com>",
 	"license": "MIT",
 	"scripts": {
+		"build": "tsc && sh scripts/prepareBuild.sh",
 		"start": "sh scripts/prepareBuild.sh && tsc-watch --onSuccess \"node build/src/server.js\""
 	},
 	"devDependencies": {
