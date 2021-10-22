@@ -25,7 +25,7 @@ export async function getFilteredObjects(
 				JOIN sportzones sz ON sz.object_id = obj.id
 				JOIN sportzone_types szt ON szt.id = sz.sportzone_type_id
 				JOIN sportzone_sport_types szst ON szst.sportzone_id = sz.id
-					WHERE (obj.lat <= $1 AND obj.lng >= $2 AND obj.lat >= $3 AND obj.lng <= $4)
+					WHERE (obj.lat >= $1 AND obj.lng >= $2 AND obj.lat <= $3 AND obj.lng <= $4)
 						AND (($5 = '') IS NOT FALSE OR lower(obj.name) LIKE $5)
 						AND (array_length($6::int[], 1) IS NULL OR obj.department_id = ANY($6::int[]))
 						AND (($7 = '') IS NOT FALSE OR lower(sz.name) LIKE $7)

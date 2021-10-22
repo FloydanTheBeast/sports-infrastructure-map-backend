@@ -26,7 +26,7 @@ paths:
           description: Долгота левого верхнего угла прямоугольника
           schema:
             type: number
-            example: 37.617644
+            example: 37.587644
         - in: query
           name: toLat
           required: true
@@ -40,7 +40,7 @@ paths:
           description: Долгота правого нижнего угла прямоугольника
           schema:
             type: number
-            example: 37.587644
+            example: 37.617644
       requestBody:
         content:
           application/json:
