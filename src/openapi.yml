@@ -18,28 +18,28 @@ paths:
           required: true
           description: Широта левого верхнего угла прямоугольника
           schema:
-            type: integer
+            type: number
             example: 55.755819
         - in: query
           name: fromLng
           required: true
           description: Долгота левого верхнего угла прямоугольника
           schema:
-            type: integer
+            type: number
             example: 37.617644
         - in: query
           name: toLat
           required: true
           description: Широта правого нижнего угла прямоугольника
           schema:
-            type: integer
+            type: number
             example: 55.785819
         - in: query
           name: toLng
           required: true
           description: Долгота правого нижнего угла прямоугольника
           schema:
-            type: integer
+            type: number
             example: 37.587644
       requestBody:
         content:
