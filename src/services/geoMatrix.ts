@@ -1,4 +1,5 @@
 import { IGeoRect } from "../interfaces";
+import { calculateColor } from "../utils";
 
 export function getSubMatrixForRectSelection(
 	selection: IGeoRect,
@@ -13,6 +14,7 @@ export function getSubMatrixForRectSelection(
 			"Selection must be sorted minLat < maxLat, minLng < maxLng"
 		);
 	}
+
 	const vertN = matrix.length;
 	const horzN = matrix[0].length;
 	const vertStep = (matrixGeoRect.maxLat - matrixGeoRect.minLat) / vertN;
@@ -30,6 +32,7 @@ export function getSubMatrixForRectSelection(
 		),
 		vertN - 1
 	);
+
 	const horzMinIndex = Math.min(
 		Math.max(
 			getCoveredIndex(
@@ -42,6 +45,7 @@ export function getSubMatrixForRectSelection(
 		),
 		horzN - 1
 	);
+
 	const vertMaxIndex = Math.min(
 		Math.max(
 			getCoveredIndex(
@@ -54,6 +58,7 @@ export function getSubMatrixForRectSelection(
 		),
 		vertN - 1
 	);
+
 	const horzMaxIndex = Math.min(
 		Math.max(
 			getCoveredIndex(
@@ -72,14 +77,24 @@ export function getSubMatrixForRectSelection(
 		maxLat: matrixGeoRect.minLat + (vertMaxIndex + 1) * vertStep,
 		maxLng: matrixGeoRect.minLng + (horzMaxIndex + 1) * horzStep
 	};
-	const resultMatrix = [];
+
+	let resultMatrix: number[][] = [];
+
+	let maxDensityValue = 0;
+
 	for (let i = vertMinIndex; i <= vertMaxIndex; i++) {
 		const row = [];
 		for (let j = horzMinIndex; j <= horzMaxIndex; j++) {
+			maxDensityValue = Math.max(maxDensityValue, matrix[i][j]);
 			row.push(matrix[i][j]);
 		}
 		resultMatrix.push(row);
 	}
+
+	resultMatrix = resultMatrix.map((row) =>
+		row.map((val) => calculateColor(val / maxDensityValue))
+	);
+
 	return {
 		geoRect: resultBorders,
 		matrix: resultMatrix
