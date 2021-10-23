@@ -175,6 +175,48 @@ paths:
       responses:
         200:
           description: Границы области и матрица плотностей для этих границ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  geoRect:
+                    description: Округленные вверх границы выделения
+                    type: object
+                    properties:
+                      minLat:
+                        type: number
+                        example: 55.147199297273595
+                      minLng:
+                        type: number
+                        example: 36.75571401201972
+                      maxLat:
+                        type: number
+                        example: 56.078541702726405
+                      maxLng:
+                        type: number
+                        example: 38.06930098798028
+                  legend:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        minValue:
+                          type: number
+                          example: 6071.826484018266
+                        maxValue:
+                          type: number
+                          example: 12143.652968036531
+                        color:
+                          type: number
+                          example: 5740119
+                  matrix:
+                    description: Матрица плотностей
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: number
         400:
           description: Параметры некорректны
 components:

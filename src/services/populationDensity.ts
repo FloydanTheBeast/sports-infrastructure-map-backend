@@ -2,18 +2,20 @@ import haversine from "haversine";
 import _ from "lodash";
 import cache from "memory-cache";
 import { BadRequestError } from "routing-controllers";
-import { IGeoRect } from "../interfaces";
+import { IGeoRect, ILegendBin } from "../interfaces";
 import { calculateColor } from "../utils";
 import query from "./db";
 import { getSubMatrixForRectSelection } from "./geoMatrix";
 
 const MIN_MATRIX_SIZE = 128;
 const MAX_MATRIX_SIZE = 2048;
+const BINS_NUMBER = 5;
 
 export async function getPopulationDensityHeatMap(
 	selection: IGeoRect
 ): Promise<{
 	geoRect: IGeoRect;
+	legend: ILegendBin[];
 	matrix: number[][];
 }> {
 	if (
@@ -35,12 +37,28 @@ export async function getPopulationDensityHeatMap(
 		matrixGeoRect
 	);
 
-	const maxDensityValue = _.max(_.map(subMatrix.matrix, _.max)) || 1.0;
+	// const maxDensityValue = _.max(_.map(subMatrix.matrix, _.max)) || 1.0;
+	const maxDensityValue = 30359.132420091326;
+	const binStep = maxDensityValue / BINS_NUMBER;
+	const bins: ILegendBin[] = [];
+
+	for (let i = 0; i < BINS_NUMBER; i++) {
+		bins.push({
+			minValue: i * binStep,
+			maxValue: (i + 1) * binStep,
+			color: calculateColor(i / (BINS_NUMBER - 1))
+		});
+	}
+
 	const coloredSubMatrix = _.map(subMatrix.matrix, (row) =>
 		_.map(row, (val) => calculateColor(val / maxDensityValue))
 	);
 
-	return { geoRect: subMatrix.geoRect, matrix: coloredSubMatrix };
+	return {
+		geoRect: subMatrix.geoRect,
+		legend: bins,
+		matrix: coloredSubMatrix
+	};
 }
 
 async function loadMatrix(size: number): Promise<number[][]> {

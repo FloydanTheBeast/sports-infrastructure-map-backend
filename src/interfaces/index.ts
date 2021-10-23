@@ -1,5 +1,6 @@
 import IEnvVars from "./IEnvVars";
 import IGeoRect from "./IGeoRect";
+import { ILegendBin } from "./ILegendBin";
 import IObject from "./IObject";
 import IObjectExtended from "./IObjectExtended";
 import IObjectsFilters from "./IObjectsFilters";
@@ -11,5 +12,7 @@ export {
 	IObjectsFilters,
 	IObject,
 	IObjectExtended,
-	IGeoRect
+	IGeoRect,
+	ILegendBin
 };
+
