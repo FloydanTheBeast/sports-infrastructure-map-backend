@@ -106,10 +106,22 @@ export async function getObjectFilters(): Promise<any> {
 		};
 	});
 
-	return {
-		departments,
-		sportzoneTypes,
-		sportsTypes,
-		proximities
-	};
+	return [
+		{
+			title: "Департаменты",
+			items: departments
+		},
+		{
+			title: "Типы спортивных зон",
+			items: sportzoneTypes
+		},
+		{
+			title: "Типы спортивных услуг",
+			items: sportsTypes
+		},
+		{
+			title: "Зоны доступности",
+			items: proximities
+		}
+	];
 }

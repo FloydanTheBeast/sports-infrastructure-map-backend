@@ -88,52 +88,24 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  departments:
-                    type: array
+                type: array
+                items:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                      example: Департаменты
                     items:
-                      type: object
-                      properties: 
-                        id:
-                          type: integer
-                          example: 237332
-                        name:
-                          type: string
-                          example: Департамент культуры города Москвы
-                  sportzoneTypes:
-                    type: array
-                    items:
-                      type: object
-                      properties: 
-                        id:
-                          type: integer
-                          example: 1
-                        name:
-                          type: string
-                          example: автодром аттракционный
-                  sportsTypes:
-                    type: array
-                    items:
-                      type: object
-                      properties: 
-                        id:
-                          type: integer
-                          example: 1
-                        name:
-                          type: string
-                          example: Авиамодельный спорт
-                  proximities:
-                    type: array
-                    items:
-                      type: object
-                      properties: 
-                        id:
-                          type: integer
-                          example: 1
-                        name:
-                          type: string
-                          example: Городское - до 5000 м.
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                            example: 237332
+                          name:
+                            type: string
+                            example: Департамент культуры города Москвы
   /heatmap/population-density:
     get:
       tags:
