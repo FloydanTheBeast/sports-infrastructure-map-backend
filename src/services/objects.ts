@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { IObject, IObjectsFilters, IObjectsQueryParams } from "../interfaces";
 import query from "./db";
@@ -94,9 +95,16 @@ export async function getObjectFilters(): Promise<any> {
 		SELECT * FROM sport_types
 	`);
 
-	const proximities = await query(`
+	let proximities = await query(`
 		SELECT * FROM proximity
 	`);
+
+	proximities = _.map(proximities, (proximity) => {
+		return {
+			id: proximity.id,
+			name: `${proximity.proximity} - до ${proximity.radius} м.`
+		};
+	});
 
 	return {
 		departments,

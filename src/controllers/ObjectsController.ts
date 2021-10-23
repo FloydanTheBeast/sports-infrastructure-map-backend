@@ -59,7 +59,7 @@ export default class ObjectsController {
 	}
 
 	@Get("/filters")
-	public async getAvailableFilters(@Res() res: Response): Promise<any> {
+	public async getObjectFilters(@Res() res: Response): Promise<any> {
 		return await getObjectFilters()
 			.then((obj) => res.status(200).send(obj))
 			.catch((err) =>
