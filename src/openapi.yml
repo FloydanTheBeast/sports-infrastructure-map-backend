@@ -131,13 +131,9 @@ paths:
                         id:
                           type: integer
                           example: 1
-                        proximity:
+                        name:
                           type: string
-                          example: Городское
-                        radius:
-                          type: integer
-                          description: Радиус доступности в метрах
-                          example: 5000
+                          example: Городское - до 5000 м.
   /heatmap/population-density:
     get:
       tags:
