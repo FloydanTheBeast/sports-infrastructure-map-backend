@@ -1,13 +1,13 @@
+import haversine from "haversine";
+import _ from "lodash";
 import cache from "memory-cache";
 import { BadRequestError } from "routing-controllers";
 import { IGeoRect } from "../interfaces";
+import { calculateColor } from "../utils";
 import query from "./db";
 import { getSubMatrixForRectSelection } from "./geoMatrix";
-import _ from "lodash";
-import haversine from "haversine";
-import { calculateColor } from "../utils";
 
-const MIN_MATRIX_SIZE = 32;
+const MIN_MATRIX_SIZE = 128;
 const MAX_MATRIX_SIZE = 2048;
 
 export async function getPopulationDensityHeatMap(

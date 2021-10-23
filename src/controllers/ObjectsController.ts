@@ -9,7 +9,11 @@ import {
 	Res
 } from "routing-controllers";
 import { IObject, IObjectsFilters, IObjectsQueryParams } from "../interfaces";
-import { getFilteredObjects, getObjectAttributes } from "../services";
+import {
+	getFilteredObjects,
+	getObjectAttributes,
+	getObjectFilters
+} from "../services";
 
 @JsonController("/objects")
 export default class ObjectsController {
@@ -52,5 +56,16 @@ export default class ObjectsController {
 					message: err.message
 				});
 			});
+	}
+
+	@Get("/filters")
+	public async getAvailableFilters(@Res() res: Response): Promise<any> {
+		return await getObjectFilters()
+			.then((obj) => res.status(200).send(obj))
+			.catch((err) =>
+				res.status(400).send({
+					message: err.message
+				})
+			);
 	}
 }

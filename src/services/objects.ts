@@ -80,3 +80,28 @@ export async function getObjectAttributes(objectID: number): Promise<any> {
 
 	return { ...objectAttributes, sportzones };
 }
+
+export async function getObjectFilters(): Promise<any> {
+	const departments = await query(`
+		SELECT * FROM departments
+	`);
+
+	const sportzoneTypes = await query(`
+		SELECT * FROM sportzone_types
+	`);
+
+	const sportsTypes = await query(`
+		SELECT * FROM sport_types
+	`);
+
+	const proximities = await query(`
+		SELECT * FROM proximity
+	`);
+
+	return {
+		departments,
+		sportzoneTypes,
+		sportsTypes,
+		proximities
+	};
+}

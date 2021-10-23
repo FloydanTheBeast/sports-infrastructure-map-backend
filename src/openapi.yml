@@ -77,6 +77,67 @@ paths:
                   $ref: "#/components/schemas/ObjectExtended"
         404:
           description: Объект не найден
+  /objects/filters:
+    get:
+      tags:
+        - objects
+      summary: Получение всевозможных фильтров
+      responses:
+        200:
+          description: Все фильтры из базы данных получены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  departments:
+                    type: array
+                    items:
+                      type: object
+                      properties: 
+                        id:
+                          type: integer
+                          example: 237332
+                        name:
+                          type: string
+                          example: Департамент культуры города Москвы
+                  sportzoneTypes:
+                    type: array
+                    items:
+                      type: object
+                      properties: 
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: автодром аттракционный
+                  sportsTypes:
+                    type: array
+                    items:
+                      type: object
+                      properties: 
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Авиамодельный спорт
+                  proximities:
+                    type: array
+                    items:
+                      type: object
+                      properties: 
+                        id:
+                          type: integer
+                          example: 1
+                        proximity:
+                          type: string
+                          example: Городское
+                        radius:
+                          type: integer
+                          description: Радиус доступности в метрах
+                          example: 5000
   /heatmap/population-density:
     get:
       tags:
