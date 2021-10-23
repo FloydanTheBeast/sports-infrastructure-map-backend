@@ -10,7 +10,7 @@ import { IGeoRect } from "../interfaces";
 import { getPopulationDensityHeatMap } from "../services";
 
 @JsonController("/heatmap")
-export default class PopulationDensityHeatmapController {
+export default class HeatmapController {
 	@Get("/population-density")
 	public async getPopulationDensityHeatMap(
 		@QueryParams() params: IGeoRect,
