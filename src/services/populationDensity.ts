@@ -5,6 +5,7 @@ import query from "./db";
 import { getSubMatrixForRectSelection } from "./geoMatrix";
 import _ from "lodash";
 import haversine from "haversine";
+import { calculateColor } from "../utils";
 
 const MIN_MATRIX_SIZE = 32;
 const MAX_MATRIX_SIZE = 2048;
@@ -28,7 +29,18 @@ export async function getPopulationDensityHeatMap(
 	const matrixSize = chooseMatrixSize(selection, matrixGeoRect);
 	const matrix = await loadMatrix(matrixSize);
 
-	return getSubMatrixForRectSelection(selection, matrix, matrixGeoRect);
+	const subMatrix = getSubMatrixForRectSelection(
+		selection,
+		matrix,
+		matrixGeoRect
+	);
+
+	const maxDensityValue = _.max(_.map(subMatrix.matrix, _.max)) || 1.0;
+	const coloredSubMatrix = _.map(subMatrix.matrix, (row) =>
+		_.map(row, (val) => calculateColor(val / maxDensityValue))
+	);
+
+	return { geoRect: subMatrix.geoRect, matrix: coloredSubMatrix };
 }
 
 async function loadMatrix(size: number): Promise<number[][]> {
