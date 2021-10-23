@@ -1,5 +1,4 @@
 import { IGeoRect } from "../interfaces";
-import { calculateColor } from "../utils";
 
 export function getSubMatrixForRectSelection(
 	selection: IGeoRect,
@@ -78,22 +77,15 @@ export function getSubMatrixForRectSelection(
 		maxLng: matrixGeoRect.minLng + (horzMaxIndex + 1) * horzStep
 	};
 
-	let resultMatrix: number[][] = [];
-
-	let maxDensityValue = 0;
+	const resultMatrix: number[][] = [];
 
 	for (let i = vertMinIndex; i <= vertMaxIndex; i++) {
 		const row = [];
 		for (let j = horzMinIndex; j <= horzMaxIndex; j++) {
-			maxDensityValue = Math.max(maxDensityValue, matrix[i][j]);
 			row.push(matrix[i][j]);
 		}
 		resultMatrix.push(row);
 	}
-
-	resultMatrix = resultMatrix.map((row) =>
-		row.map((val) => calculateColor(val / maxDensityValue))
-	);
 
 	return {
 		geoRect: resultBorders,
