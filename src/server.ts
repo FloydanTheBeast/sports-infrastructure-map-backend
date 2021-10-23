@@ -1,14 +1,11 @@
 import "reflect-metadata";
 import App from "./app";
 import config from "./config";
-import {
-	ObjectsController,
-	PopulationDensityHeatmapController
-} from "./controllers";
+import { ObjectsController, HeatmapController } from "./controllers";
 
 const app = new App({
 	cors: true,
-	controllers: [ObjectsController, PopulationDensityHeatmapController]
+	controllers: [ObjectsController, HeatmapController]
 });
 
 app.startServer(config.server.port, (port) => {

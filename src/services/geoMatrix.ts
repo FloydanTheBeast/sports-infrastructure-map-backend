@@ -105,3 +105,24 @@ function getCoveredIndex(
 
 	return Math.floor(relativePosition * steps);
 }
+
+export function choosePowerOfTwoMatrixSize(
+	selection: IGeoRect,
+	matrixGeoRect: IGeoRect,
+	minMatrixSize: number,
+	maxMatrixSize: number
+): number {
+	const latZoom =
+		(matrixGeoRect.maxLat - matrixGeoRect.minLat) /
+		(selection.maxLat - selection.minLat);
+
+	const lngZoom =
+		(matrixGeoRect.maxLng - matrixGeoRect.minLng) /
+		(selection.maxLng - selection.minLng);
+
+	const zoom = Math.max(latZoom, lngZoom) * minMatrixSize;
+	const powerOf2 = Math.floor(Math.log2(zoom) + 0.5);
+	const matrixSize = Math.round(Math.pow(2, powerOf2));
+
+	return Math.max(Math.min(matrixSize, maxMatrixSize), minMatrixSize);
+}
