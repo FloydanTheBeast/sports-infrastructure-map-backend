@@ -1,4 +1,4 @@
 import ObjectsController from "./ObjectsController";
-import PopulationDensityHeatmapController from "./PopulationDensityHeatmapController";
+import HeatmapController from "./HeatmapController";
 
-export { ObjectsController, PopulationDensityHeatmapController };
+export { ObjectsController, HeatmapController };

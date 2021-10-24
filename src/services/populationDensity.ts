@@ -5,7 +5,10 @@ import { BadRequestError } from "routing-controllers";
 import { IGeoRect, ILegendBin } from "../interfaces";
 import { calculateColor } from "../utils";
 import query from "./db";
-import { getSubMatrixForRectSelection } from "./geoMatrix";
+import {
+	choosePowerOfTwoMatrixSize,
+	getSubMatrixForRectSelection
+} from "./geoMatrix";
 
 const MIN_MATRIX_SIZE = 128;
 const MAX_MATRIX_SIZE = 2048;
@@ -78,7 +81,7 @@ async function loadMatrix(size: number): Promise<number[][]> {
 	return cache.get(cacheKey);
 }
 
-async function loadMatrixGeoRect(): Promise<IGeoRect> {
+export async function loadMatrixGeoRect(): Promise<IGeoRect> {
 	const cacheKey = "matrix-geo-rect";
 
 	if (cache.get(cacheKey) === null) {
@@ -104,19 +107,12 @@ function chooseMatrixSize(
 	selection: IGeoRect,
 	matrixGeoRect: IGeoRect
 ): number {
-	const latZoom =
-		(matrixGeoRect.maxLat - matrixGeoRect.minLat) /
-		(selection.maxLat - selection.minLat);
-
-	const lngZoom =
-		(matrixGeoRect.maxLng - matrixGeoRect.minLng) /
-		(selection.maxLng - selection.minLng);
-
-	const zoom = Math.max(latZoom, lngZoom) * MIN_MATRIX_SIZE;
-	const powerOf2 = Math.floor(Math.log2(zoom) + 0.5);
-	const matrixSize = Math.round(Math.pow(2, powerOf2));
-
-	return Math.max(Math.min(matrixSize, MAX_MATRIX_SIZE), MIN_MATRIX_SIZE);
+	return choosePowerOfTwoMatrixSize(
+		selection,
+		matrixGeoRect,
+		MIN_MATRIX_SIZE,
+		MAX_MATRIX_SIZE
+	);
 }
 
 // Возвращает положительное вещественное число или 0
