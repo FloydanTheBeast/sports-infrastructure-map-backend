@@ -190,7 +190,8 @@ paths:
                           example: 12.1K
                         color:
                           type: number
-                          example: 5740119
+                          description: Цвет с альфа-каналом
+                          example: 3880532992
                   matrix:
                     description: Матрица плотностей, кол-во человек на кв. км
                     type: array
@@ -198,6 +199,8 @@ paths:
                       type: array
                       items:
                         type: number
+                      example:
+                        [3880532992, 242533312]
         400:
           description: Параметры некорректны
   /heatmap/sportzone-density:

@@ -3,7 +3,7 @@ import _ from "lodash";
 import cache from "memory-cache";
 import { BadRequestError } from "routing-controllers";
 import { IGeoRect, ILegendBin } from "../interfaces";
-import { calculateColor, shortFormat } from "../utils";
+import { calculateColorWithAlpha, shortFormat } from "../utils";
 import query from "./db";
 import {
 	choosePowerOfTwoMatrixSize,
@@ -53,12 +53,12 @@ export async function getPopulationDensityHeatMap(
 			maxValue: maxValue,
 			minValueFormatted: shortFormat(minValue),
 			maxValueFormatted: shortFormat(maxValue),
-			color: calculateColor(i / (BINS_NUMBER - 1))
+			color: calculateColorWithAlpha(i / (BINS_NUMBER - 1))
 		});
 	}
 
 	const coloredSubMatrix = _.map(subMatrix.matrix, (row) =>
-		_.map(row, (val) => calculateColor(val / maxDensityValue))
+		_.map(row, (val) => calculateColorWithAlpha(val / maxDensityValue))
 	);
 
 	return {

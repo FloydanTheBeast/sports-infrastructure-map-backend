@@ -35,3 +35,13 @@ export const calculateColor = (percent: number): number => {
 
 	return parseInt(colorString, 16);
 };
+
+export const calculateColorWithAlpha = (percent: number): number => {
+	if (percent < 0 || percent > 1) {
+		throw new RangeError("Процент должен быть значение от 0 до 1");
+	}
+
+	const alpha = (255 * percent).toString(16).padStart(2, "0");
+
+	return parseInt(HIGH_DENSITY_COLOR + alpha, 16);
+};
