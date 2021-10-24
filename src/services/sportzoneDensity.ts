@@ -2,7 +2,7 @@ import _ from "lodash";
 import query from "./db";
 import { BadRequestError } from "routing-controllers";
 import { IGeoRect, ILegendBin } from "../interfaces";
-import { calculateColor } from "../utils";
+import { calculateColor, shortFormat } from "../utils";
 import { choosePowerOfTwoMatrixSize, getCoveredIndex } from "./geoMatrix";
 import { loadMatrixGeoRect } from "./populationDensity";
 
@@ -142,9 +142,13 @@ export async function getSportzoneDensityHeatMap(
 	const bins: ILegendBin[] = [];
 
 	for (let i = 0; i < BINS_NUMBER; i++) {
+		const minValue = i * binStep;
+		const maxValue = (i + 1) * binStep;
 		bins.push({
-			minValue: i * binStep,
-			maxValue: (i + 1) * binStep,
+			minValue: minValue,
+			maxValue: maxValue,
+			minValueFormatted: shortFormat(minValue),
+			maxValueFormatted: shortFormat(maxValue),
 			color: calculateColor(i / (BINS_NUMBER - 1))
 		});
 	}
