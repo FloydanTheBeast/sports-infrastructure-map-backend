@@ -180,6 +180,12 @@ paths:
                         maxValue:
                           type: number
                           example: 12143.652968036531
+                        minValueFormatted:
+                          type: string
+                          example: 6.07K
+                        maxValueFormatted:
+                          type: string
+                          example: 12.1K
                         color:
                           type: number
                           example: 5740119
@@ -248,6 +254,12 @@ paths:
                         maxValue:
                           type: number
                           example: 12143.652968036531
+                        minValueFormatted:
+                          type: string
+                          example: 6.07K
+                        maxValueFormatted:
+                          type: string
+                          example: 12.1K
                         color:
                           type: number
                           example: 5740119
