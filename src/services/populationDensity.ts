@@ -10,7 +10,7 @@ import {
 	getSubMatrixForRectSelection
 } from "./geoMatrix";
 
-const MIN_MATRIX_SIZE = 128;
+const MIN_MATRIX_SIZE = 64;
 const MAX_MATRIX_SIZE = 2048;
 const BINS_NUMBER = 5;
 
