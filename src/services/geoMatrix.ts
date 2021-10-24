@@ -93,7 +93,7 @@ export function getSubMatrixForRectSelection(
 	};
 }
 
-function getCoveredIndex(
+export function getCoveredIndex(
 	x: number,
 	left: number,
 	right: number,

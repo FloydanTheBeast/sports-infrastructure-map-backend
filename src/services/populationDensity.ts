@@ -81,7 +81,7 @@ async function loadMatrix(size: number): Promise<number[][]> {
 	return cache.get(cacheKey);
 }
 
-async function loadMatrixGeoRect(): Promise<IGeoRect> {
+export async function loadMatrixGeoRect(): Promise<IGeoRect> {
 	const cacheKey = "matrix-geo-rect";
 
 	if (cache.get(cacheKey) === null) {

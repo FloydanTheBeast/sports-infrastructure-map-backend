@@ -1,4 +1,5 @@
 import express from "express";
+import bodyParser from "body-parser";
 import path from "path";
 import {
 	RoutingControllersOptions,
@@ -14,6 +15,7 @@ class App {
 
 	constructor(options: RoutingControllersOptions) {
 		this.server = express();
+		this.server.use(bodyParser.json({ limit: "1mb" }));
 		this.server.use(
 			"/api-docs",
 			swaggerUI.serve,

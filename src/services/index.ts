@@ -7,12 +7,13 @@ import {
 	getAmountOfPeopleInSelection,
 	getPopulationDensityHeatMap
 } from "./populationDensity";
+import { getSportzoneDensityHeatMap } from "./sportzoneDensity";
 
 export {
 	getFilteredObjects,
 	getObjectAttributes,
 	getObjectFilters,
 	getPopulationDensityHeatMap,
-	getAmountOfPeopleInSelection
+	getAmountOfPeopleInSelection,
+	getSportzoneDensityHeatMap
 };
-

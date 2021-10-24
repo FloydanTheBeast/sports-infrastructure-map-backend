@@ -6,6 +6,8 @@ info:
 tags:
 - name: objects
   description: Спортивные объекты
+- name: heatmap
+  description: Тепловые карты
 paths:
   /objects:
     post:
@@ -179,7 +181,75 @@ paths:
                           type: number
                           example: 5740119
                   matrix:
-                    description: Матрица плотностей
+                    description: Матрица плотностей, кол-во человек на кв. км
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: number
+        400:
+          description: Параметры некорректны
+  /heatmap/sportzone-density:
+    post:
+      tags:
+        - heatmap
+      summary: Получение тепловой карты доступной площади спортзон
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                geoRect:
+                  $ref: "#/components/schemas/GeoRect"
+                sportzoneIds:
+                  type: array
+                  items:
+                    type: number
+                  example:
+                    - 1040614
+                    - 1040616
+                    - 1042887
+      responses:
+        200:
+          description: Границы области и матрица плотностей для этих границ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  geoRect:
+                    description: Округленные вверх границы выделения
+                    type: object
+                    properties:
+                      minLat:
+                        type: number
+                        example: 55.147199297273595
+                      minLng:
+                        type: number
+                        example: 36.75571401201972
+                      maxLat:
+                        type: number
+                        example: 56.078541702726405
+                      maxLng:
+                        type: number
+                        example: 38.06930098798028
+                  legend:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        minValue:
+                          type: number
+                          example: 6071.826484018266
+                        maxValue:
+                          type: number
+                          example: 12143.652968036531
+                        color:
+                          type: number
+                          example: 5740119
+                  matrix:
+                    description: Матрица доступной площади, кв. м
                     type: array
                     items:
                       type: array
@@ -277,3 +347,27 @@ components:
                 items:
                   type: string
                   example: ["Баскетбол", "Волейбол"]
+    GeoRect:
+      description: Прямоугольная область на карте
+      type: object
+      properties:
+        minLat:
+          required: true
+          description: Минимальная широта выделенной области
+          type: number
+          example: 55.2
+        minLng:
+          required: true
+          description: Минимальная долгота выделенной области
+          type: number
+          example: 36.9
+        maxLat:
+          required: true
+          description: Максимальная широта выделенной области
+          type: number
+          example: 55.3
+        maxLng:
+          required: true
+          description: Максимальная долгота выделенной области
+          type: number
+          example: 37.1
