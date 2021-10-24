@@ -43,5 +43,5 @@ export const calculateColorWithAlpha = (percent: number): number => {
 
 	const alpha = (255 * percent).toString(16).padStart(2, "0");
 
-	return parseInt(HIGH_DENSITY_COLOR + alpha, 16);
+	return parseInt(alpha + HIGH_DENSITY_COLOR, 16);
 };
