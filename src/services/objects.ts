@@ -109,18 +109,22 @@ export async function getObjectFilters(): Promise<any> {
 	return [
 		{
 			title: "Департаменты",
+			requestName: "departmentIds",
 			items: departments
 		},
 		{
 			title: "Типы спортивных зон",
+			requestName: "sportzoneTypesIds",
 			items: sportzoneTypes
 		},
 		{
 			title: "Типы спортивных услуг",
+			requestName: "sportTypesIds",
 			items: sportsTypes
 		},
 		{
 			title: "Зоны доступности",
+			requestName: "proximityIds",
 			items: proximities
 		}
 	];

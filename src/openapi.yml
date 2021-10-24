@@ -97,6 +97,9 @@ paths:
                     title:
                       type: string
                       example: Департаменты
+                    requestName:
+                      type: string
+                      example: departmentIds
                     items:
                       type: array
                       items:
