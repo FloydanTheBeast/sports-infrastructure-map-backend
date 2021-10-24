@@ -1,5 +1,4 @@
-const LOW_DENSITY_COLOR = "27ae60";
-const HIGH_DENSITY_COLOR = "e74c3c";
+import { HIGH_DENSITY_COLOR, LOW_DENSITY_COLOR } from "./colorConsts";
 
 const getColorChannelsValues = (hexColor: string): [number, number, number] => {
 	return [

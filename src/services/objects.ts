@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { IObject, IObjectsFilters, IObjectsQueryParams } from "../interfaces";
+import { calculateProximityColor } from "../utils";
 import query from "./db";
 
 export async function getFilteredObjects(
@@ -20,12 +21,17 @@ export async function getFilteredObjects(
 		);
 	}
 
-	const objects = await query(
+	let objects = await query(
 		`
-			SELECT DISTINCT obj.id, obj.name, obj.lat, obj.lng, obj.address FROM objects obj
+			SELECT DISTINCT obj.id, obj.name, obj.lat, obj.lng, obj.address, p.radius, sz_grouped.square FROM objects obj
 				JOIN sportzones sz ON sz.object_id = obj.id
+				JOIN (
+					SELECT object_id, sum(square) as square FROM sportzones
+					GROUP BY object_id
+				) as sz_grouped ON sz_grouped.object_id = obj.id
 				JOIN sportzone_types szt ON szt.id = sz.sportzone_type_id
 				JOIN sportzone_sport_types szst ON szst.sportzone_id = sz.id
+				JOIN proximity p ON p.id = obj.proximity_id 
 					WHERE (obj.lat >= $1 AND obj.lng >= $2 AND obj.lat <= $3 AND obj.lng <= $4)
 						AND (($5 = '') IS NOT FALSE OR lower(obj.name) LIKE $5)
 						AND (array_length($6::int[], 1) IS NULL OR obj.department_id = ANY($6::int[]))
@@ -48,6 +54,24 @@ export async function getFilteredObjects(
 			filters?.sportTypesIds || [],
 			filters?.proximityIds || []
 		]
+	);
+
+	let maxSquare: number = objects[0].square,
+		minSquare: number = objects[0].square;
+
+	objects.forEach((obj) => {
+		if (obj.square > maxSquare) {
+			maxSquare = obj.square;
+		}
+		if (obj.square < minSquare) {
+			minSquare = obj.square;
+		}
+	});
+
+	objects = objects.map((obj) =>
+		Object.assign(obj, {
+			color: calculateProximityColor(minSquare, maxSquare, obj.square)
+		})
 	);
 
 	return objects;

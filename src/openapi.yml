@@ -350,6 +350,16 @@ components:
         address:
           type: string
           example: город Троицк, улица Текстильщиков, дом 2А
+        radius:
+          type: integer
+          example: 3000
+        square:
+          type: number
+          example: 576.6
+          description: Суммарная площадь спортивных зон
+        color:
+          type: number
+          example: 3254622
     ObjectsFilters:
       description: Параметры фильтрации объектов
       type: object
