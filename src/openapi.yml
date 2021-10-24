@@ -8,6 +8,8 @@ tags:
   description: Спортивные объекты
 - name: heatmap
   description: Тепловые карты
+- name: statistics
+  description: Различные метрики
 paths:
   /objects:
     post:
@@ -258,6 +260,59 @@ paths:
                       type: array
                       items:
                         type: number
+        400:
+          description: Параметры некорректны
+  /statistics:
+    get:
+      tags:
+        - statistics
+      summary: Метод для получения показателей на 100000 человек
+      parameters:
+        - in: query
+          name: minLat
+          required: true
+          description: Минимальная широта выделенной области
+          schema:
+            type: number
+            example: 55.2
+        - in: query
+          name: minLng
+          required: true
+          description: Минимальная долгота выделенной области
+          schema:
+            type: number
+            example: 36.9
+        - in: query
+          name: maxLat
+          required: true
+          description: Максимальная широта выделенной области
+          schema:
+            type: number
+            example: 55.3
+        - in: query
+          name: maxLng
+          required: true
+          description: Максимальная долгота выделенной области
+          schema:
+            type: number
+            example: 37.1
+      responses:
+        200:
+          description: Параметры корректны
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sportzones_count:
+                    type: number
+                    example: 0.00009
+                  square: 
+                    type: number
+                    example: 0.028351000000000005
+                  sports_count:
+                    type: number
+                    example: 0.00012
         400:
           description: Параметры некорректны
 components:
