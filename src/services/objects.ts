@@ -56,8 +56,8 @@ export async function getFilteredObjects(
 		]
 	);
 
-	let maxSquare: number = objects[0].square,
-		minSquare: number = objects[0].square;
+	let maxSquare: number = objects[0]?.square || 0,
+		minSquare: number = objects[0]?.square || Math.pow(2, 32) - 1;
 
 	objects.forEach((obj) => {
 		if (obj.square > maxSquare) {
