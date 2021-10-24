@@ -41,7 +41,9 @@ export const calculateColorWithAlpha = (percent: number): number => {
 		throw new RangeError("Процент должен быть значение от 0 до 1");
 	}
 
-	const alpha = (255 * percent).toString(16).padStart(2, "0");
+	const alpha = Math.round(255 * percent)
+		.toString(16)
+		.padStart(2, "0");
 
 	return parseInt(alpha + HIGH_DENSITY_COLOR, 16);
 };
